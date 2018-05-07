@@ -1,11 +1,14 @@
 package com.example.a2_daw.weatherapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -17,6 +20,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    private static final String TAG = MainActivity.class.getName();
 
     private List<Weather> mWeatherList = new ArrayList<>();
     private RecyclerView mRecyclerView;
@@ -34,6 +39,25 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter( mWeatherAdapter);
         loadWeatherData();
+
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        showUnitsState();
+    }
+
+    private void showUnitsState() {
+
+        SharedPreferences prefs = getSharedPreferences(
+                "data",
+                Context.MODE_PRIVATE
+        );
+        String unit = prefs.getString("UNITS", "metrico");
+        Log.d(TAG, "UNITS: " + unit);
 
     }
 
@@ -83,13 +107,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
+        Intent intent = null;
 
-        if (id == R.id.about_menu_item){
-            Intent about = new Intent(getApplicationContext(), AboutActivity.class);
-            startActivity(about);
+        switch ( id ) {
+            case R.id.about_menu_item:
+                intent = new Intent(getApplicationContext(), AboutActivity.class);
+                break;
+            case R.id.settings_menu_item:
+                intent = new Intent(getApplicationContext(), SetupActivity.class);
+                break;
         }
+
+        startActivity(intent);
 
         return super.onOptionsItemSelected(item);
     }
