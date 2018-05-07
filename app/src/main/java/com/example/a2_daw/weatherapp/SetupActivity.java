@@ -13,6 +13,7 @@ public class SetupActivity extends AppCompatActivity {
     private static final String TAG = SetupActivity.class.getName();
 
     ToggleButton unitsToggleButton;
+    ToggleButton cityToggleButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +22,15 @@ public class SetupActivity extends AppCompatActivity {
 
         unitsToggleButton = findViewById(R.id.units_toggle_button);
 
+        cityToggleButton = findViewById(R.id.city_toggle_button);
+
         SharedPreferences prefs = getSharedPreferences(
                 "data",
                 Context.MODE_PRIVATE
         );
         String unit = prefs.getString("UNITS", "no_unit");
+
+        String city = prefs.getString("CITY", "no_city");
 
         if( unit.equals("metric") ){
             unitsToggleButton.setText("Metric");
@@ -33,6 +38,14 @@ public class SetupActivity extends AppCompatActivity {
         }else{
             unitsToggleButton.setText("Imperial");
             unitsToggleButton.setChecked(false);
+        }
+
+        if( city.equals("sevilla") ){
+            cityToggleButton.setText("Sevilla");
+            cityToggleButton.setChecked(true);
+        }else{
+            cityToggleButton.setText("Madrid");
+            cityToggleButton.setChecked(false);
         }
 
         showToolbar("Preferences", true);
@@ -58,11 +71,24 @@ public class SetupActivity extends AppCompatActivity {
         editorPrefs.commit();
     }
 
+    private void saveCity(String city) {
+        SharedPreferences prefs = getSharedPreferences(
+                "data",
+                Context.MODE_PRIVATE
+        );
+
+        SharedPreferences.Editor editorPrefs = prefs.edit();
+
+        editorPrefs.putString("CITY", city);
+        editorPrefs.commit();
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
 
         String unit = unitsToggleButton.getText().toString().toLowerCase();
+        String city = unitsToggleButton.getText().toString().toLowerCase();
 
         Toast.makeText(
                 getApplicationContext(),
@@ -71,5 +97,13 @@ public class SetupActivity extends AppCompatActivity {
         ).show();
 
         saveUnits(unit);
+
+        Toast.makeText(
+                getApplicationContext(),
+                "Saving CITYS: " + city,
+                Toast.LENGTH_SHORT
+        ).show();
+
+        saveCity(city);
     }
 }
