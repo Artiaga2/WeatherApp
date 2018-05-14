@@ -2,10 +2,10 @@ package com.example.a2_daw.weatherapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
+import android.widget.EditText;
 import android.widget.ToggleButton;
 
 public class SetupActivity extends AppCompatActivity {
@@ -13,7 +13,7 @@ public class SetupActivity extends AppCompatActivity {
     private static final String TAG = SetupActivity.class.getName();
 
     ToggleButton unitsToggleButton;
-    ToggleButton cityToggleButton;
+    EditText locationEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,16 +21,13 @@ public class SetupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setup);
 
         unitsToggleButton = findViewById(R.id.units_toggle_button);
-
-        cityToggleButton = findViewById(R.id.city_toggle_button);
+        locationEditText = findViewById(R.id.location_edit_text);
 
         SharedPreferences prefs = getSharedPreferences(
                 "data",
                 Context.MODE_PRIVATE
         );
         String unit = prefs.getString("UNITS", "no_unit");
-
-        String city = prefs.getString("CITY", "no_city");
 
         if( unit.equals("metric") ){
             unitsToggleButton.setText("Metric");
@@ -40,13 +37,8 @@ public class SetupActivity extends AppCompatActivity {
             unitsToggleButton.setChecked(false);
         }
 
-        if( city.equals("sevilla") ){
-            cityToggleButton.setText("Sevilla");
-            cityToggleButton.setChecked(true);
-        }else{
-            cityToggleButton.setText("Madrid");
-            cityToggleButton.setChecked(false);
-        }
+        String location = prefs.getString("LOCATION", "No Location");
+        locationEditText.setText(location);
 
         showToolbar("Preferences", true);
     }
@@ -71,7 +63,7 @@ public class SetupActivity extends AppCompatActivity {
         editorPrefs.commit();
     }
 
-    private void saveCity(String city) {
+    private void saveLocation(String location) {
         SharedPreferences prefs = getSharedPreferences(
                 "data",
                 Context.MODE_PRIVATE
@@ -79,7 +71,7 @@ public class SetupActivity extends AppCompatActivity {
 
         SharedPreferences.Editor editorPrefs = prefs.edit();
 
-        editorPrefs.putString("CITY", city);
+        editorPrefs.putString("LOCATION", location);
         editorPrefs.commit();
     }
 
@@ -88,22 +80,11 @@ public class SetupActivity extends AppCompatActivity {
         super.onPause();
 
         String unit = unitsToggleButton.getText().toString().toLowerCase();
-        String city = unitsToggleButton.getText().toString().toLowerCase();
-
-        Toast.makeText(
-                getApplicationContext(),
-                "Saving UNITS: " + unit,
-                Toast.LENGTH_SHORT
-        ).show();
+        String location = locationEditText.getText().toString();
 
         saveUnits(unit);
-
-        Toast.makeText(
-                getApplicationContext(),
-                "Saving CITYS: " + city,
-                Toast.LENGTH_SHORT
-        ).show();
-
-        saveCity(city);
+        saveLocation(location);
     }
+
+
 }
