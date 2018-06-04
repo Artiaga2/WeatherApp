@@ -5,4 +5,5 @@
     <string name="units_desc_text_view">Units can be \'Metric\' or \'Imperial\'</string>
     <string name="ciudad">Ciudad</string>
     <string name="city_hint">Introduce la localización</string>
+    <string name="settings_menu_item">Settings</string>
 </resources>
